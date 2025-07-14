@@ -10,3 +10,33 @@
         <input type="reset" value="清除">
 	</form>
 </fieldset>
+<script>
+    function reg(){
+        let data={
+            acc: $("#acc").val(),
+            pw: $("#pw").val(),
+            pw2: $("#pw2").val(),
+            email: $("#email").val()
+        }
+        if(data.acc == "" || data.pw == "" || data.pw2 == "" || data.email == ""){
+            alert("不可空白");
+        }else if(data.pw != data.pw2){
+            alert("密碼不一致");
+        }else{
+           $.get("./api/chk_acc.php", data, (res) => {
+                if(parseInt(res)){
+                    alert("帳號重複")
+                }else{
+                    $.post("./api/save_user.php", data, (res) => {
+                        if(parseInt(res)){
+                            alert("註冊成功");
+                            location.href = "?do=login";
+                        }else{
+                            alert("註冊失敗，請稍後再試");
+                        }
+                    })
+                }
+            })
+        }
+    }
+</script>
