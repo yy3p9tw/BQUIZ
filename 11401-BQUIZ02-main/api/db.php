@@ -66,6 +66,25 @@ function count(...$arg){
     return $this->pdo->query($sql)->fetchColumn();
 }
 
+function sum($col,...$arg){
+    $sql="select sum($col) from $this->table ";
+    if(isset($arg[0])){
+        if(is_array($arg[0])){
+            $tmp=$this->arraytosql($arg[0]);
+            $sql=$sql." where ".join(" AND " , $tmp);
+
+        }else{
+            $sql .= $arg[0];
+        }
+    }
+
+    if(isset($arg[1])){
+        $sql .= $arg[1];
+    }
+
+    return $this->pdo->query($sql)->fetchColumn();
+}
+
 function find($id){
     $sql="select * from $this->table ";
     
@@ -124,7 +143,7 @@ private function arraytosql($array){
 
 
 $User=new DB('users');
-
+$Visit=new DB("visit");
 /* 測試資料庫連線及功能正常
 $User->save(['acc'=>'test','pw'=>'5678','email'=>'test@labor.gov.tw']);
 $User->save(['acc'=>'mem01','pw'=>'mem01','email'=>'mem01@labor.gov.tw']);
@@ -136,13 +155,19 @@ $User->save(['acc'=>'mem02','pw'=>'mem02','email'=>'mem02@labor.gov.tw'])
 
 
 
-/* if(!isset($_SESSION['visit'])){
+if(!isset($_SESSION['visit'])){
     //第一次來訪
-    $t=$Total->find(1);
-    $t['total']++;
-    $Total->save($t);
+    $today=$Visit->find(['date'=>date("Y-m-d")]);
+    if(empty($today)){
+        //沒有今天的資料
+        $Visit->save(['date'=>date("Y-m-d"),'visit'=>1]);
+    }else{
+        $today['visit']++;
+        $Visit->save($today);
+    }
+
     $_SESSION['visit']=1;
-} */
+}
 
 
 
