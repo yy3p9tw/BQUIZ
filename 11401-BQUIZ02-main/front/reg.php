@@ -27,7 +27,7 @@
                 if(parseInt(res)){
                     alert("帳號重複")
                 }else{
-                    $.post("./api/save_user.php", data, (res) => {
+                    $.post("./api/reg.php", data, (res) => {
                         if(parseInt(res)){
                             alert("註冊成功");
                             location.href = "?do=login";
